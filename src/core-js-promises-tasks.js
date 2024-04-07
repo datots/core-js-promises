@@ -89,11 +89,9 @@ function getFirstResolvedPromiseResult(promises) {
 function getFirstPromiseResult(promises) {
   return Promise.race(promises)
     .then((value) => {
-      console.log('First promise resolved:', value);
       return value;
     })
     .catch(() => {
-      console.error('Promise rejected with: ', error);
       throw error;
     });
 }
