@@ -5,6 +5,8 @@
  *                                                                                             *
  ********************************************************************************************* */
 
+const { error } = require('console');
+
 /**
  * Returns a Promise that is fulfilled with the input number if the number is non-negative (including zero),
  * and rejected if the number is negative.
@@ -17,8 +19,14 @@
  * 0    => promise that will be fulfilled
  * 1    => promise that will be fulfilled
  */
-function getPromise(/* number */) {
-  throw new Error('Not implemented');
+function getPromise(number) {
+  return new Promise((resolve, reject) => {
+    if (number >= 0) {
+      resolve(number);
+    } else {
+      reject(new Error('The nummber is Negative'));
+    }
+  });
 }
 
 /**
@@ -33,8 +41,8 @@ function getPromise(/* number */) {
  * Promise.resolve('success') => promise that will be fulfilled with 'success' value
  * Promise.reject('fail')     => promise that will be fulfilled with 'fail' value
  */
-function getPromiseResult(/* source */) {
-  throw new Error('Not implemented');
+function getPromiseResult(source) {
+  return source.then(() => 'success').catch(() => 'fail');
 }
 
 /**
@@ -50,8 +58,13 @@ function getPromiseResult(/* source */) {
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)]  => Promise fulfilled with 1
  * [Promise.reject(1), Promise.reject(2), Promise.reject(3)]    => Promise rejected
  */
-function getFirstResolvedPromiseResult(/* promises */) {
-  throw new Error('Not implemented');
+function getFirstResolvedPromiseResult(promises) {
+  return new Promise((resolve, reject) => {
+    promises.forEach((promise) => {
+      promise.then(resolve).catch(() => {});
+    });
+    setTimeout(() => reject(new Error('All promises were rejected')), 0);
+  });
 }
 
 /**
@@ -73,8 +86,16 @@ function getFirstResolvedPromiseResult(/* promises */) {
  * [promise3, promise6, promise2] => Promise rejected with 2
  * [promise3, promise4, promise6] => Promise rejected with 6
  */
-function getFirstPromiseResult(/* promises */) {
-  throw new Error('Not implemented');
+function getFirstPromiseResult(promises) {
+  return Promise.race(promises)
+    .then((value) => {
+      console.log('First promise resolved:', value);
+      return value;
+    })
+    .catch(() => {
+      console.error('Promise rejected with: ', error);
+      throw error;
+    });
 }
 
 /**
@@ -88,8 +109,12 @@ function getFirstPromiseResult(/* promises */) {
  * [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)] => Promise fulfilled with [1, 2, 3]
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)] => Promise rejected with 2
  */
-function getAllOrNothing(/* promises */) {
-  throw new Error('Not implemented');
+function getAllOrNothing(promises) {
+  return new Promise((resolve, reject) => {
+    Promise.all(promises)
+      .then((values) => resolve(values))
+      .catch(() => reject(error));
+  });
 }
 
 /**
